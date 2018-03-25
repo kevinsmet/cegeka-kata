@@ -1,11 +1,11 @@
 package dis.will.be.epic.sauce;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlayerTest {
 
@@ -23,7 +23,7 @@ public class PlayerTest {
 
         Player player = new Player(handCards, new Card(CardColor.INDIGO, 5));
 
-        Assertions.assertThat(player.getHandCards()).containsAll(handCards);
+        assertThat(player.getHandCards()).containsAll(handCards);
     }
 
     @Test
@@ -41,7 +41,39 @@ public class PlayerTest {
 
         Player player = new Player(handCards, startingTableauCard);
 
-        Assertions.assertThat(player.getTableauCards()).hasSize(1);
-        Assertions.assertThat(player.getTableauCards().get(0)).isEqualTo(startingTableauCard);
+        assertThat(player.getTableauCards()).hasSize(1);
+        assertThat(player.getTableauCards().get(0)).isEqualTo(startingTableauCard);
+    }
+
+    @Test
+    public void winsAgainst_givenActiveWinConditionHighestCardWinsAndPlayerHasHigherNumber_ThenWins() {
+        Player winner = new Player(newArrayList(), new Card(CardColor.INDIGO, 6));
+        Player loser = new Player(newArrayList(), new Card(CardColor.INDIGO, 5));
+
+        assertThat(winner.winsAgainst(loser, WinCondition.HIGHEST_CARD)).isGreaterThan(0);
+    }
+
+    @Test
+    public void winsAgainst_givenActiveWinConditionHighestCardWinsAndPlayerHasLowerNumber_ThenLoses() {
+        Player winner = new Player(newArrayList(), new Card(CardColor.INDIGO, 6));
+        Player loser = new Player(newArrayList(), new Card(CardColor.INDIGO, 5));
+
+        assertThat(loser.winsAgainst(winner, WinCondition.HIGHEST_CARD)).isLessThan(0);
+    }
+
+    @Test
+    public void winsAgainst_givenActiveWinConditionHighestCardWinsAndPlayerHasSameNumberButHigherColor_ThenWins() {
+        Player winner = new Player(newArrayList(), new Card(CardColor.RED, 6));
+        Player loser = new Player(newArrayList(), new Card(CardColor.INDIGO, 6));
+
+        assertThat(winner.winsAgainst(loser, WinCondition.HIGHEST_CARD)).isGreaterThan(0);
+    }
+
+    @Test
+    public void winsAgainst_givenActiveWinConditionHighestCardWinsAndPlayerHasSameNumberButLowerColor_ThenWins() {
+        Player winner = new Player(newArrayList(), new Card(CardColor.RED, 6));
+        Player loser = new Player(newArrayList(), new Card(CardColor.INDIGO, 6));
+
+        assertThat(loser.winsAgainst(winner, WinCondition.HIGHEST_CARD)).isLessThan(0);
     }
 }

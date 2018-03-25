@@ -21,7 +21,38 @@ public class Card {
         return cardColor;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Card card = (Card) o;
+
+        if (value != card.value) return false;
+        return cardColor == card.cardColor;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cardColor != null ? cardColor.hashCode() : 0;
+        result = 31 * result + value;
+        return result;
+    }
+
+    public int isHigherThan(Card other) {
+        if (getValue() > other.getValue()) {
+            return 1;
+        } else if (getValue() < other.getValue()) {
+            return -1;
+        } else if (getCardColor().getValue() > other.getCardColor().getValue()) {
+            return 1;
+        } else if (getCardColor().getValue() < other.getCardColor().getValue()) {
+            return -1;
+        }
+        throw new IllegalArgumentException("Draws not possible");
     }
 }
