@@ -13,7 +13,7 @@ public class GameStateManagerTest {
                 playerWithTableauCard(new Card(CardColor.VIOLET, 4)),
                 playerWithTableauCard(new Card(CardColor.VIOLET, 3)),
                 playerWithTableauCard(new Card(CardColor.INDIGO, 5))
-        ));
+        ), new Deck());
 
         assertThat(gameStateManager.getActiveWincondition()).isEqualTo(WinCondition.HIGHEST_CARD);
     }

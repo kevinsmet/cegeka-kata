@@ -1,13 +1,13 @@
 # Red7
 
-Red7 is card game released in 2014 that features 'Hand Management', 'Player Elimination' and 'Set Collection' mechanisms.
-The game components consist of 49 cards, numbered from 1 to 7 in 7 different colors. 
-Over the course of the game, players build a set of cards in front of them (their 'palette').
+Red7 is card gameInitializer released in 2014 that features 'Hand Management', 'Player Elimination' and 'Set Collection' mechanisms.
+The gameInitializer components consist of 49 cards, numbered from 1 to 7 in 7 different colors. 
+Over the course of the gameInitializer, players build a set of cards in front of them (their 'palette').
 There is always an active rule (eg: the player with the most even cards in their palette is the winner).
 
 During their turn, a player has to make sure he beats all other players. 
 He can do this by adding a card to his palette or by changing the rule (or doing both).
-If he finds no way to build the best palette during his turn, he is eliminated from the game.
+If he finds no way to build the best palette during his turn, he is eliminated from the gameInitializer.
 Players keep on taking turns until only one player is left. 
 That player is then crowned the winner. 
 
@@ -16,7 +16,7 @@ You already start with some classes to get you to the good parts faster.
 A card has a number (1-7) and a CardColor. The deck contains all 49 cards.
 You can ask the deck to get you a card. This should return the top card of the deck.
 
-1. Set up the initial game state
+1. Set up the initial gameInitializer state
     1. Every player should receive 7 cards in their hand and 1 card in their palette
     2. There are 2 - 4 players 
     3. There are no duplicate cards in the deck
@@ -26,10 +26,10 @@ You can ask the deck to get you a card. This should return the top card of the d
     1. The starting player is the player right after the current winner, going clock-wise
 3. A player can give up
     1. Only if he is the current player
-    1. This player can no longer participate in the game in any way (and thus can no longer win the game)
-    3. All of the eliminated player's cards (hand and palette cards) are removed from the game
-    2. If you are out of cards at the start of your turn and at least one other player is still in the game, your only option is to give up
-    3. If only one player remains (because every one else has given up), that player is the winner and the game ends     
+    1. This player can no longer participate in the gameInitializer in any way (and thus can no longer win the gameInitializer)
+    3. All of the eliminated player's cards (hand and palette cards) are removed from the gameInitializer
+    2. If you are out of cards at the start of your turn and at least one other player is still in the gameInitializer, your only option is to give up
+    3. If only one player remains (because every one else has given up), that player is the winner and the gameInitializer ends     
 4. A player can play a card from his hand into his palette
     1. Only if he is the current player
     2. Only if playing that card would make him the winner when looking at the current rule.
@@ -47,7 +47,7 @@ You can ask the deck to get you a card. This should return the top card of the d
     4. He can't use the same card in his palette and as a rule
     5. He plays the card in his palette first and then the card as a rule
     6. You can only play 2 cards at max: one in your palette and the other as a new rule
-7. Make sure you can play a complete game using a test
+7. Make sure you can play a complete gameInitializer using a test
 
 \* You don't have to implement all 7 rules for this story yet. 
 The most 'interesting' rule to implement is the 'most in a row' and the easiest ones are 'most of a number/color'     
@@ -60,4 +60,4 @@ These effects happen when you play a card in your palette that corresponds with 
     3. 'Discarding' a card means that you place it as a new rule. The 'canvas' is the space where rules are placed
     4. None of these effects are optional. Only for 1 there's a possibility you might not have a valid target player (if you have the biggest palette). 
 
-2. Implement a multi-round game defined in the multi_round_rules file in references
+2. Implement a multi-round gameInitializer defined in the multi_round_rules file in references
