@@ -1,5 +1,7 @@
 package com.cegeka.red7;
 
+import com.google.common.base.Preconditions;
+
 import java.util.List;
 
 import static com.cegeka.red7.WinCondition.HIGHEST_CARD;
@@ -50,8 +52,31 @@ public class GameStateManager {
         switchCurrentPlayerAfterRemoval(removedIndex);
     }
 
+    public void currentPlayerPlaysCardToHisTableau(int index) {
+        getCurrentPlayer().playCardInTableau(index);
+        performPostPlayerMoveActions();
+    }
+
+    private void performPostPlayerMoveActions() {
+        checkIfCurrentPlayerWins();
+        switchCurrentPlayer();
+    }
+
+    private void checkIfCurrentPlayerWins() {
+        Preconditions.checkArgument(getCurrentPlayer().equals(getWinningPlayer()), "Player did not win after move");
+    }
+
+    private void switchCurrentPlayer() {
+        determineNewCurrentPlayer(players.indexOf(currentPlayer));
+        checkIfNewCurrentPlayerCanStillPlay();
+    }
+
     private void switchCurrentPlayerAfterRemoval(int removedIndex) {
         determineNewCurrentPlayerAfterRemoval(removedIndex);
+        checkIfNewCurrentPlayerCanStillPlay();
+    }
+
+    private void checkIfNewCurrentPlayerCanStillPlay() {
         if (currentPlayer.getHandCards().size() == 0 && getWinner() == null) {
             currentPlayerGivesUp();
         }
@@ -62,6 +87,14 @@ public class GameStateManager {
             currentPlayer = players.get(0);
         } else {
             currentPlayer = players.get(removedIndex);
+        }
+    }
+
+    private void determineNewCurrentPlayer(int currentPlayerIndex) {
+        if (currentPlayerIndex == players.size()) {
+            currentPlayer = players.get(0);
+        } else {
+            currentPlayer = players.get(currentPlayerIndex + 1);
         }
     }
 

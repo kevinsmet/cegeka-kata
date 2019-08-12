@@ -26,6 +26,16 @@ public class Player {
         return activeWincondition.determineWinner(this, other);
     }
 
+    public void playCardInTableau(int index) {
+        Card cardToAddToTableau = this.handCards.get(index);
+        playCardInTableau(cardToAddToTableau);
+    }
+
+    public void playCardInTableau(Card cardToPlayIntoTableau) {
+        handCards.remove(cardToPlayIntoTableau);
+        tableauCards.add(cardToPlayIntoTableau);
+    }
+
     @Override
     public String toString() {
         return "Player{" +

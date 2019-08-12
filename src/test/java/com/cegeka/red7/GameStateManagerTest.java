@@ -1,7 +1,9 @@
 package com.cegeka.red7;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -9,6 +11,10 @@ import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GameStateManagerTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
     public void defaultActiveWinConditionIsHighestCardWins() {
         GameStateManager gameStateManager = new GameStateManager(newArrayList(
@@ -69,6 +75,50 @@ public class GameStateManagerTest {
         Assertions.assertThat(gameStateManager.getCurrentPlayer()).isEqualTo(expectedCurrentPlayer);
         Assertions.assertThat(gameStateManager.getPlayers()).containsOnly(expectedCurrentPlayer);
         Assertions.assertThat(gameStateManager.getWinner()).isEqualTo(expectedCurrentPlayer);
+    }
+
+    @Test
+    public void currentPlayerPlaysCardToHisTableau_shouldRemoveCardFromHandAndAddToTableau() {
+        Card cardToBePlacedInTableau = new Card(CardColor.RED, 7);
+        Card cardAlreadyInTableau = new Card(CardColor.VIOLET, 5);
+        Player currentPlayer = playerWithTableauAndHandCards(cardAlreadyInTableau,
+                newArrayList(new Card(CardColor.GREEN, 6), new Card(CardColor.GREEN, 5), cardToBePlacedInTableau));
+        Player playerAfterCurrentPlayer = playerWithTableauCard(new Card(CardColor.VIOLET, 4));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                currentPlayer,
+                playerAfterCurrentPlayer,
+                playerWithTableauCard(new Card(CardColor.VIOLET, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5))
+        ), new Deck());
+
+        gameStateManager.currentPlayerPlaysCardToHisTableau(2);
+
+        assertPlayerPlayedIntoTableauSuccesfully(cardToBePlacedInTableau, cardAlreadyInTableau, currentPlayer, playerAfterCurrentPlayer, gameStateManager);
+    }
+
+
+    private void assertPlayerPlayedIntoTableauSuccesfully(Card cardToBePlacedInTableau, Card cardAlreadyInTableau, Player currentPlayer, Player playerAfterCurrentPlayer, GameStateManager gameStateManager) {
+        Assertions.assertThat(currentPlayer.getHandCards()).doesNotContain(cardToBePlacedInTableau);
+        Assertions.assertThat(currentPlayer.getTableauCards()).contains(cardToBePlacedInTableau, cardAlreadyInTableau);
+        Assertions.assertThat(gameStateManager.getCurrentPlayer()).isEqualTo(playerAfterCurrentPlayer);
+    }
+
+    @Test
+    public void currentPlayerPlaysCardToHisTableau_givenDoesNotWinAfterMove_ThenThrowException() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Player did not win after move");
+
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.VIOLET, 5),
+                newArrayList(new Card(CardColor.GREEN, 1), new Card(CardColor.GREEN, 5), new Card(CardColor.RED, 7)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                currentPlayer,
+                playerWithTableauCard(new Card(CardColor.VIOLET, 4)),
+                playerWithTableauCard(new Card(CardColor.VIOLET, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5))
+        ), new Deck());
+
+        gameStateManager.currentPlayerPlaysCardToHisTableau(0);
+
     }
 
     private Player playerWithTableauCard(Card startingTableauCard) {
