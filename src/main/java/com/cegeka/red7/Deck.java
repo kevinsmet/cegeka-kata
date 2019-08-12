@@ -1,5 +1,8 @@
 package com.cegeka.red7;
 
+import org.apache.commons.lang.math.RandomUtils;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -25,7 +28,19 @@ public class Deck {
         return IntStream.range(1, 8).mapToObj(i -> new Card(cardColor, i)).collect(Collectors.toList());
     }
 
-    public Card getCard() {
-        return cardsInDeck.get(0);
+    public List<Card> giveRandomCards(int amount) {
+        return IntStream.range(0, amount)
+                .mapToObj(i -> giveRandomCard())
+                .collect(Collectors.toList());
+    }
+
+    public Card giveRandomCard() {
+        Card randomlyChosenCard = cardsInDeck.get(RandomUtils.nextInt(cardsInDeck.size()));
+        this.cardsInDeck.remove(randomlyChosenCard);
+        return randomlyChosenCard;
+    }
+
+    public List<Card> getCardsInDeck() {
+        return Collections.unmodifiableList(cardsInDeck);
     }
 }
