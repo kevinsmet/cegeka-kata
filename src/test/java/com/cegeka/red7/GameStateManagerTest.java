@@ -175,4 +175,116 @@ public class GameStateManagerTest {
         gameStateManager.currentPlayerChangesRule(0);
     }
 
+    @Test
+    public void currentPlayerPlaysCardIntoTableauAndChangesRule_shouldDoEverythingTheSeparateActionsDid() {
+        Card cardToPlayIntoTableau = new Card(CardColor.YELLOW, 2);
+        Card cardToPlayAsRule = new Card(CardColor.VIOLET, 1);
+        Card cardAlreadyInTableau = new Card(CardColor.GREEN, 3);
+        Player currentPlayer = playerWithTableauAndHandCards(cardAlreadyInTableau,
+                newArrayList(cardToPlayAsRule, new Card(CardColor.GREEN, 5), cardToPlayIntoTableau));
+        Player nextPlayer = playerWithTableauCard(new Card(CardColor.VIOLET, 4));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCard(new Card(CardColor.RED, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5)),
+                currentPlayer,
+                nextPlayer)
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardIntoTableauAndChangesRule(2, 0);
+
+        assertPlayerPlayedIntoTableauSuccesfully(cardToPlayIntoTableau, cardAlreadyInTableau, currentPlayer, nextPlayer, gameStateManager);
+        assertPlayerChangedRuleSuccesFully(cardToPlayAsRule, currentPlayer, nextPlayer, gameStateManager);
+    }
+
+    @Test
+    public void currentPlayerPlaysCardIntoTableauAndChangesRule_givenDoesNotWinAfterAction_thenThrowException() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Player did not win after move");
+
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 3),
+                newArrayList(new Card(CardColor.RED, 1), new Card(CardColor.GREEN, 5), new Card(CardColor.YELLOW, 2)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCard(new Card(CardColor.RED, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5)),
+                currentPlayer,
+                playerWithTableauCard(new Card(CardColor.VIOLET, 4)))
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardIntoTableauAndChangesRule(2, 0);
+    }
+
+    @Test
+    public void currentPlayerPlaysCardIntoTableauAndChangesRule_givenNewCardInTableauIsSameAsNewCardForRule_thenThrowException() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Tried to play the same card in tableau and as the new rule");
+
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 3),
+                newArrayList(new Card(CardColor.RED, 1), new Card(CardColor.GREEN, 5), new Card(CardColor.VIOLET, 2)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCard(new Card(CardColor.RED, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5)),
+                currentPlayer,
+                playerWithTableauCard(new Card(CardColor.VIOLET, 4)))
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardIntoTableauAndChangesRule(2, 2);
+    }
+
+    @Test
+    public void givenPlayerHasNoCardsInHandAtStartOfTurnAndIsNotTheLastPlayerRemaining_thenShouldGetRemovedFromGame() {
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 3),
+                newArrayList(new Card(CardColor.RED, 7), new Card(CardColor.GREEN, 5), new Card(CardColor.VIOLET, 2)));
+        Player playerToBeRemoved = playerWithTableauCardAndEmptyHand(new Card(CardColor.VIOLET, 4));
+        Player otherPlayerToBeRemoved = playerWithTableauCardAndEmptyHand(new Card(CardColor.RED, 3));
+        Player otherPlayerStillInTheGame = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 6),
+                newArrayList(new Card(CardColor.RED, 1)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                otherPlayerToBeRemoved,
+                otherPlayerStillInTheGame,
+                currentPlayer,
+                playerToBeRemoved)
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardToHisTableau(0);
+
+        assertThat(gameStateManager.getPlayers()).doesNotContain(playerToBeRemoved, otherPlayerToBeRemoved);
+        assertThat(gameStateManager.getPlayers()).containsOnly(currentPlayer, otherPlayerStillInTheGame);
+        assertThat(gameStateManager.getCurrentPlayer()).isEqualTo(otherPlayerStillInTheGame);
+    }
+
+    @Test
+    public void givenPlayerHasNoCardsInHandAtStartOfTurnAndLastPlayerRemaining_thenShouldNotRemovedFromGameAndBeDeclaredWinner() {
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 3),
+                newArrayList(new Card(CardColor.RED, 7)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCardAndEmptyHand(new Card(CardColor.RED, 3)),
+                playerWithTableauCardAndEmptyHand(new Card(CardColor.GREEN, 6)),
+                currentPlayer,
+                playerWithTableauCardAndEmptyHand(new Card(CardColor.VIOLET, 4)))
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardToHisTableau(0);
+
+        assertThat(gameStateManager.getPlayers()).hasSize(1);
+        assertThat(gameStateManager.getPlayers()).containsOnly(currentPlayer);
+        assertThat(gameStateManager.getWinner()).isEqualTo(currentPlayer);
+    }
+
+    @Test
+    public void getWinner_shouldReturnNullIfMoreThan1PlayerStillPlaying() {
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.GREEN, 3),
+                newArrayList(new Card(CardColor.RED, 7), new Card(CardColor.VIOLET, 2)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCardAndEmptyHand(new Card(CardColor.RED, 3)),
+                playerWithTableauCardAndEmptyHand(new Card(CardColor.GREEN, 6)),
+                currentPlayer,
+                playerWithTableauAndHandCards(new Card(CardColor.VIOLET, 4), newArrayList(new Card(CardColor.RED, 6), new Card(CardColor.BLUE, 2))))
+                , new Deck());
+
+        gameStateManager.currentPlayerPlaysCardToHisTableau(0);
+
+        assertThat(gameStateManager.getWinner()).isNull();
+    }
+
+
 }

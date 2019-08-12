@@ -67,6 +67,20 @@ public class GameStateManager {
         performPostPlayerMoveActions();
     }
 
+    public void currentPlayerPlaysCardIntoTableauAndChangesRule(int indexToPlayIntoTableau, int indexToPlayAsNewRule) {
+        checkIfPlayerDidntTryToPlayTheSameCardTwice(indexToPlayAsNewRule, indexToPlayIntoTableau);
+        Card cardToPlayIntoTableau = getCurrentPlayer().getHandcard(indexToPlayIntoTableau);
+        Card cardToSetAsNewRule = getCurrentPlayer().getHandcard(indexToPlayAsNewRule);
+        getCurrentPlayer().playCardInTableau(cardToPlayIntoTableau);
+        getCurrentPlayer().removeCardFromHand(cardToSetAsNewRule);
+        changeRuleTo(cardToSetAsNewRule.getCardColor().getWinCondition());
+        performPostPlayerMoveActions();
+    }
+
+    private void checkIfPlayerDidntTryToPlayTheSameCardTwice(int indexToPlayAsNewRule, int indexToPlayIntoTableau) {
+        Preconditions.checkArgument(indexToPlayAsNewRule != indexToPlayIntoTableau, "Tried to play the same card in tableau and as the new rule");
+    }
+
     private void performPostPlayerMoveActions() {
         checkIfCurrentPlayerWins();
         switchCurrentPlayer();

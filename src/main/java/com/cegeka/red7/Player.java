@@ -46,6 +46,10 @@ public class Player {
         handCards.remove(cardToRemove);
     }
 
+    public Card getHandcard(int indexToPlayIntoTableau) {
+        return handCards.get(indexToPlayIntoTableau);
+    }
+
     @Override
     public String toString() {
         return "Player{" +
