@@ -21,4 +21,8 @@ public class Player {
     public List<Card> getTableauCards() {
         return tableauCards;
     }
+
+    public int winsAgainst(Player other, WinCondition activeWincondition) {
+        return activeWincondition.determineWinner(this, other);
+    }
 }

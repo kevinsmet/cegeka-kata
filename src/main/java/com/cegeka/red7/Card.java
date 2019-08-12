@@ -40,4 +40,17 @@ public class Card {
     public int hashCode() {
         return Objects.hash(cardColor, value);
     }
+
+    public int isHigherThan(Card other) {
+        if (getValue() > other.getValue()) {
+            return 1;
+        } else if (getValue() < other.getValue()) {
+            return -1;
+        } else if (getCardColor().getValue() > other.getCardColor().getValue()) {
+            return 1;
+        } else if (getCardColor().getValue() < other.getCardColor().getValue()) {
+            return -1;
+        }
+        throw new IllegalArgumentException("Draws not possible");
+    }
 }
