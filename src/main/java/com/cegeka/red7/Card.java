@@ -2,6 +2,8 @@ package com.cegeka.red7;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Objects;
+
 public class Card {
 
     private final CardColor cardColor;
@@ -23,5 +25,19 @@ public class Card {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return value == card.value &&
+                cardColor == card.cardColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cardColor, value);
     }
 }
