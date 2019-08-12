@@ -36,6 +36,16 @@ public class Player {
         tableauCards.add(cardToPlayIntoTableau);
     }
 
+    public Card removeCardFromHand(int index) {
+        Card cardToRemove = this.handCards.get(index);
+        removeCardFromHand(cardToRemove);
+        return cardToRemove;
+    }
+
+    public void removeCardFromHand(Card cardToRemove) {
+        handCards.remove(cardToRemove);
+    }
+
     @Override
     public String toString() {
         return "Player{" +

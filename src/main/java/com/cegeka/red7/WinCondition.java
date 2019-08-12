@@ -1,17 +1,15 @@
 package com.cegeka.red7;
 
-import com.cegeka.red7.wincondition.HighestCardDeterminer;
-import com.cegeka.red7.wincondition.RuleUnspecificDeterminer;
-import com.cegeka.red7.wincondition.WinConditionSpecificDeterminer;
+import com.cegeka.red7.wincondition.*;
 
 public enum WinCondition {
     HIGHEST_CARD(new HighestCardDeterminer()),
-    MOST_OF_ONE_NUMBER(new HighestCardDeterminer()),
-    MOST_OF_ONE_COLOR(new HighestCardDeterminer()),
-    MOST_EVEN(new HighestCardDeterminer()),
-    MOST_DIFFERENT_COLORS(new HighestCardDeterminer()),
-    MOST_IN_A_ROW(new HighestCardDeterminer()),
-    MOST_BELOW_FOUR(new HighestCardDeterminer());
+    MOST_OF_ONE_NUMBER(new MostOfOneNumberDeterminer()),
+    MOST_OF_ONE_COLOR(new MostOfOneColorDeterminer()),
+    MOST_EVEN(new MostEvenDeterminer()),
+    MOST_DIFFERENT_COLORS(new MostDifferentColorsDeterminer()),
+    MOST_IN_A_ROW(new MostInARowDeterminer()),
+    MOST_BELOW_FOUR(new MostBelowFourDeterminer());
 
     private WinConditionSpecificDeterminer winConditionSpecificDeterminer;
 

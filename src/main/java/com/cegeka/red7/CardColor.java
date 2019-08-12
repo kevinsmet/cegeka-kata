@@ -1,21 +1,29 @@
 package com.cegeka.red7;
 
+import static com.cegeka.red7.WinCondition.*;
+
 public enum CardColor {
-    RED(7),
-    ORANGE(6),
-    YELLOW(5),
-    GREEN(4),
-    BLUE(3),
-    INDIGO(2),
-    VIOLET(1);
+    RED(7, HIGHEST_CARD),
+    ORANGE(6, MOST_OF_ONE_NUMBER),
+    YELLOW(5, MOST_OF_ONE_COLOR),
+    GREEN(4, MOST_EVEN),
+    BLUE(3, MOST_DIFFERENT_COLORS),
+    INDIGO(2, MOST_IN_A_ROW),
+    VIOLET(1, MOST_BELOW_FOUR);
 
     private int value;
+    private WinCondition highestCard;
 
-    CardColor(int value) {
+    CardColor(int value, WinCondition winCondition) {
         this.value = value;
+        this.highestCard = winCondition;
     }
 
     public int getValue() {
         return value;
+    }
+
+    public WinCondition getWinCondition() {
+        return highestCard;
     }
 }

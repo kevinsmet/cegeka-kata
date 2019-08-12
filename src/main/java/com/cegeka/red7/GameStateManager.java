@@ -52,6 +52,16 @@ public class GameStateManager {
         switchCurrentPlayerAfterRemoval(removedIndex);
     }
 
+    public void currentPlayerChangesRule(int index) {
+        Card cardToPlayAsRule = getCurrentPlayer().removeCardFromHand(index);
+        changeRuleTo(cardToPlayAsRule.getCardColor().getWinCondition());
+        performPostPlayerMoveActions();
+    }
+
+    private void changeRuleTo(WinCondition newWinCondition) {
+        this.activeWincondition = newWinCondition;
+    }
+
     public void currentPlayerPlaysCardToHisTableau(int index) {
         getCurrentPlayer().playCardInTableau(index);
         performPostPlayerMoveActions();

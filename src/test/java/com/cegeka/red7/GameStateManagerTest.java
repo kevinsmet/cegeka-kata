@@ -132,4 +132,47 @@ public class GameStateManagerTest {
     private Player playerWithTableauCardAndEmptyHand(Card startingTableauCard) {
         return new Player(newArrayList(), startingTableauCard);
     }
+
+    @Test
+    public void currentPlayerChangesRule_shouldRemoveCardFromHandAReplaceCurrentRule() {
+        Card cardToPlayAsRule = new Card(CardColor.VIOLET, 1);
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.RED, 3),
+                newArrayList(cardToPlayAsRule, new Card(CardColor.GREEN, 5), new Card(CardColor.RED, 7)));
+        Player nextPlayer = playerWithTableauCard(new Card(CardColor.VIOLET, 4));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCard(new Card(CardColor.VIOLET, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5)),
+                currentPlayer,
+                nextPlayer)
+                , new Deck());
+
+        gameStateManager.currentPlayerChangesRule(0);
+
+        assertPlayerChangedRuleSuccesFully(cardToPlayAsRule, currentPlayer, nextPlayer, gameStateManager);
+    }
+
+    private void assertPlayerChangedRuleSuccesFully(Card cardToPlayAsRule, Player currentPlayer, Player nextPlayer, GameStateManager gameStateManager) {
+        Assertions.assertThat(currentPlayer.getHandCards()).doesNotContain(cardToPlayAsRule);
+        Assertions.assertThat(gameStateManager.getCurrentPlayer()).isEqualTo(nextPlayer);
+        Assertions.assertThat(gameStateManager.getActiveWincondition()).isEqualTo(WinCondition.MOST_BELOW_FOUR);
+    }
+
+    @Test
+    public void currentPlayerChangesRule_givenDoesNotWinAfterAction_thenThrowException() {
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("Player did not win after move");
+
+        Card cardToPlayAsRule = new Card(CardColor.RED, 1);
+        Player currentPlayer = playerWithTableauAndHandCards(new Card(CardColor.RED, 3),
+                newArrayList(cardToPlayAsRule, new Card(CardColor.GREEN, 5), new Card(CardColor.RED, 7)));
+        GameStateManager gameStateManager = new GameStateManager(newArrayList(
+                playerWithTableauCard(new Card(CardColor.VIOLET, 3)),
+                playerWithTableauCard(new Card(CardColor.INDIGO, 5)),
+                currentPlayer,
+                playerWithTableauCard(new Card(CardColor.VIOLET, 4)))
+                , new Deck());
+
+        gameStateManager.currentPlayerChangesRule(0);
+    }
+
 }
