@@ -20,7 +20,7 @@ public class GameStateManager {
     }
 
     private void calculateStartingPlayer() {
-        this.currentPlayer = players.get((players.indexOf(getWinningPlayer()) + 1) % 4);
+        this.currentPlayer = players.get((players.indexOf(getWinningPlayer()) + 1) % players.size());
     }
 
     private Player getWinningPlayer() {
@@ -115,7 +115,7 @@ public class GameStateManager {
     }
 
     private void determineNewCurrentPlayer(int currentPlayerIndex) {
-        if (currentPlayerIndex == players.size()) {
+        if (currentPlayerIndex + 1 == players.size()) {
             currentPlayer = players.get(0);
         } else {
             currentPlayer = players.get(currentPlayerIndex + 1);
