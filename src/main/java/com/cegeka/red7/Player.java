@@ -25,4 +25,12 @@ public class Player {
     public int winsAgainst(Player other, WinCondition activeWincondition) {
         return activeWincondition.determineWinner(this, other);
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "handCards=" + handCards +
+                ", tableauCards=" + tableauCards +
+                '}';
+    }
 }

@@ -42,4 +42,34 @@ public class GameStateManager {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
+
+    public void currentPlayerGivesUp() {
+        Player playerToRemove = getCurrentPlayer();
+        int removedIndex = players.indexOf(playerToRemove);
+        removePlayerFromPlayers(playerToRemove);
+        switchCurrentPlayerAfterRemoval(removedIndex);
+    }
+
+    private void switchCurrentPlayerAfterRemoval(int removedIndex) {
+        determineNewCurrentPlayerAfterRemoval(removedIndex);
+        if (currentPlayer.getHandCards().size() == 0 && getWinner() == null) {
+            currentPlayerGivesUp();
+        }
+    }
+
+    private void determineNewCurrentPlayerAfterRemoval(int removedIndex) {
+        if (removedIndex == players.size()) {
+            currentPlayer = players.get(0);
+        } else {
+            currentPlayer = players.get(removedIndex);
+        }
+    }
+
+    private void removePlayerFromPlayers(Player playerToRemove) {
+        this.players.remove(playerToRemove);
+    }
+
+    public Player getWinner() {
+        return getPlayers().size() == 1 ? getCurrentPlayer() : null;
+    }
 }
